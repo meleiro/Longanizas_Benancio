@@ -1,72 +1,107 @@
 /* =========================
    BASE
-========================= */
+   =========================
+   Este bloque define el “ADN visual” del sitio:
+   - Variables globales (colores, sombras, radios)
+   - Reglas base (box-sizing)
+   - Comportamiento del scroll (smooth)
+   - Estilo general del body (tipografía, fondo, color)
+*/
+
+/* :root = el “scope global” (html)
+   Todo lo que declares aquí se puede reutilizar en cualquier parte
+   con var(--nombreVariable). Es el equivalente a “constantes” de diseño. */
 :root{
-  --bg: #0f1216;
-  --card: #171b22;
-  --text: #eaeef7;
-  --muted: #a8b0c0;
-  --accent: #ff4d4d;
-  --accent2: #ffd166;
-  --line: rgba(255,255,255,.10);
-  --r: 18px;
-  --shadow: 0 14px 30px rgba(0,0,0,.35);
+  --bg: #0f1216;                      /* Color base del fondo (negro-azulado) */
+  --card: #171b22;                    /* Fondo de tarjetas para contraste */
+  --text: #eaeef7;                    /* Color de texto principal */
+  --muted: #a8b0c0;                   /* Texto secundario (menos importante) */
+  --accent: #ff4d4d;                  /* Acento principal (rojo) */
+  --accent2: #ffd166;                 /* Acento secundario (amarillo) */
+  --line: rgba(255,255,255,.10);      /* Líneas/bordes suaves con transparencia */
+  --r: 18px;                          /* Radio estándar de esquinas */
+  --shadow: 0 14px 30px rgba(0,0,0,.35); /* Sombra “elevación” para tarjetas */
 }
 
+/* Regla global de layout:
+   border-box hace que padding y border cuenten dentro del width/height.
+   Muy importante para que los tamaños no “crezcan” de forma inesperada. */
 *{ box-sizing: border-box; }
 
+/* Scroll suave cuando saltas a un ancla (#productos, #contacto...)
+   IMPORTANTE:
+   - No afecta al scroll manual con rueda/trackpad.
+   - Sí afecta a saltos automáticos (anchor links, scrollTo, etc.) */
 html { scroll-behavior: smooth;}
 
+/* BODY: estilos globales del documento */
 body{
-  margin: 0;
+  margin: 0;  /* Quitamos el margen por defecto del navegador */
+
+  /* Tipografía “system-ui”:
+     usa la fuente nativa del sistema para un look moderno y rápido */
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* BACKGROUND con capas (muy pro):
+     Aquí estás pintando 3 “capas” de fondo:
+     1) radial-gradient rojo suave (mancha de luz)
+     2) radial-gradient rojo suave (otra mancha)
+     3) color base (--bg)
+
+     El orden importa: lo primero va “encima” de lo siguiente. */
   background: 
     radial-gradient(
-      1200px 700px at 20% 10%,
-      rgba(255,77,77,.20),
-      transparent 60%
+      1200px 700px at 20% 10%,      /* Tamaño del gradiente + posición del foco */
+      rgba(255,77,77,.20),          /* Color rojo con transparencia */
+      transparent 60%               /* Se desvanece hasta transparente */
     ),
      radial-gradient(
-      900px 600px at 80% 0%,
+      900px 600px at 80% 0%,        /* Segunda mancha en otra zona */
       rgba(255,77,77,.20),
       transparent 50%
     ),
-    var(--bg);
-  
-  color: var(--text);  
+    var(--bg);                       /* Capa final: color base */
 
-
-
+  color: var(--text);                /* Color del texto por defecto */
 }
 
+/* Enlaces: heredan color del texto y sin subrayado */
 a{ color: inherit; text-decoration: none; }
+
+/* Utilidad de texto apagado */
 .muted{ color: var(--muted); }
+
+/* Estilo de precio: negrita para destacar */
 .price{ font-weight: 800; }
+
 
 /* =========================
    TOPBAR
-========================= */
+   =========================
+   Cabecera superior fija (sticky) con:
+   - z-index alto para estar por encima del resto
+   - blur de fondo tipo “cristal”
+   - flex para colocar marca a la izquierda y nav a la derecha
+*/
 .topbar{
+  position: sticky;   /* Se comporta normal hasta llegar arriba, y se “pega” */
+  top: 0;             /* Punto donde se pega */
+  z-index: 30;        /* Capa alta: queda por encima del contenido al hacer scroll */
 
-  position: sticky;
-  top: 0;
-
-
-
-
-
-
+  /* “Cristal” (glass effect):
+     backdrop-filter difumina lo que hay detrás (si hay transparencia en background) */
   backdrop-filter: blur(10px);
+
+  /* Fondo semitransparente para que se note el blur */
   background: rgba(15,18,22,.85);
+
   border-bottom: 1px solid var(--line);
   padding: 14px 18px;
+
+  /* Flex: marca a un lado y nav al otro */
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-
-
-
 }
 
 .brand{
@@ -75,14 +110,22 @@ a{ color: inherit; text-decoration: none; }
   gap: 12px;
 }
 
+/* LOGO (emoji en contenedor redondeado) */
 .logo{
   display: grid;
-  place-items: center;
+  place-items: center;   /* centra el emoji horizontal y vertical */
   width: 44px;
   height: 44px;
   border-radius: 14px;
   background: rgba(255,77,77,.18);
   border: 1px solid rgba(255,77,77,.25);
+
+  /* Animación aplicada al logo:
+     - nombre del keyframe: logoTravieso
+     - duración: 2.5s
+     - timing: ease-in-out
+     - repetición: infinite */
+  animation: logoTravieso 2.5s ease-in-out infinite;
 }
 
 .brand-text h1{
@@ -105,8 +148,8 @@ a{ color: inherit; text-decoration: none; }
 
 .nav a{
   padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid transparent;
+  border-radius: 999px;            /* forma píldora */
+  border: 1px solid transparent;   /* para que al hover aparezca sin “mover” */
 }
 
 .nav a:hover{
@@ -114,15 +157,22 @@ a{ color: inherit; text-decoration: none; }
   color: var(--text);
 }
 
+
 /* =========================
    HERO
-========================= */
+   =========================
+   Zona principal:
+   - Grid a dos columnas (texto + tarjeta)
+*/
 .hero{
   max-width: 1100px;
   margin: 0 auto;
   padding: 32px 18px 14px;
   display: grid;
+
+  /* Columna izquierda ligeramente más ancha que la derecha */
   grid-template-columns: 1.1fr .9fr;
+
   gap: 22px;
 }
 
@@ -142,6 +192,7 @@ a{ color: inherit; text-decoration: none; }
   margin-bottom: 14px;
 }
 
+/* BADGE (píldora informativa) */
 .badge{
   display: inline-flex;
   align-items: center;
@@ -150,22 +201,39 @@ a{ color: inherit; text-decoration: none; }
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.06);
+
+  /* Animación declarada en “propiedades sueltas” (más didáctico):
+     - animation-name: qué keyframe
+     - duration: cuánto dura
+     - timing: curva de velocidad
+     - iteration-count: repeticiones
+     - direction: alternate hace ida y vuelta (evita saltos) */
+  animation-name: peligroso;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
+/* PUNTO DEL BADGE (indicador tipo “activo”) */
 .badge-dot{
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--accent2);
+
+  /* Animación abreviada */
+  animation: puntoTravieso 2s ease-in-out infinite;
 }
 
 .hero-right{
-  position: relative;
+  position: relative;  /* contexto para posicionar elementos absolute dentro */
   min-height: 320px;
   display: grid;
   place-items: center;
 }
 
+/* TARJETA DEL HERO */
 .hero-card{
   width: min(380px, 100%);
   border-radius: var(--r);
@@ -175,6 +243,13 @@ a{ color: inherit; text-decoration: none; }
   padding: 18px;
   position: relative;
   overflow: hidden;
+
+  /* Animación de entrada:
+     - tarjetaTraviesa define el movimiento + opacidad
+     - 3s duración (bastante lenta comparada con 900ms; se nota)
+     - cubic-bezier(.2,.9,.2,1) => curva personalizada (arranca con energía y se asienta)
+     - 1 => solo se ejecuta una vez */
+  animation: tarjetaTraviesa 3s cubic-bezier(.2, .9, .2, 1) 1;
 }
 
 .hero-card-price{
@@ -183,6 +258,7 @@ a{ color: inherit; text-decoration: none; }
   margin: 18px 0;
 }
 
+/* Shine desactivado: no existe animación aquí */
 .shine{
   display: none; /* sin animación */
 }
@@ -194,25 +270,34 @@ a{ color: inherit; text-decoration: none; }
   font-size: 56px;
 }
 
+
 /* =========================
    MARQUEE
-========================= */
+   =========================
+   Cinta animada horizontal:
+   - overflow hidden para que no se vea el contenido fuera del contenedor
+*/
 .marquee{
   margin: 10px 0 26px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   background: rgba(255,255,255,.03);
+  overflow: hidden; /* clave para que la cinta no “asome” */
 }
 
+/* TRACK que se mueve: aquí va la animación */
 .marquee-track{
   display: flex;
   gap: 34px;
   padding: 12px 0;
   color: var(--muted);
+  white-space: nowrap; /* todo en una sola línea */
+  animation: marqueeMove 20s linear infinite;
 }
 
+
 /* =========================
-   SECTIONS
+   SECTIONS / CARDS
 ========================= */
 .section{
   max-width: 1100px;
@@ -241,9 +326,10 @@ a{ color: inherit; text-decoration: none; }
   justify-content: space-between;
 }
 
+
 /* =========================
    STEPS
-========================= */
+   ========================= */
 .steps{
   margin: 16px 0 0;
   padding: 0;
@@ -258,6 +344,7 @@ a{ color: inherit; text-decoration: none; }
   background: rgba(255,255,255,.04);
   padding: 12px 14px;
 }
+
 
 /* =========================
    FORM
@@ -282,6 +369,7 @@ input, textarea{
   color: var(--text);
   padding: 11px 12px;
 }
+
 
 /* =========================
    BUTTONS
@@ -326,9 +414,168 @@ input, textarea{
   color: var(--muted);
 }
 
+
+/* =========================================================
+    KEYFRAMES (LAS ANIMACIONES IMPORTANTES)
+   =========================================================
+   @keyframes define “fotogramas clave” de una animación.
+   Cada animación manipula propiedades en el tiempo (transform,
+   opacity, box-shadow...).
+
+   LO MÁS IMPORTANTE PARA CLASE:
+   - from/to equivale a 0%/100%
+   - Si usas %, puedes controlar fases intermedias
+   - transform suele animarse bien (muy fluido)
+   - box-shadow se puede animar pero es más “costoso”
+*/
+
+
+/* ---------------------------------------------------------
+   1) logoTravieso
+   ---------------------------------------------------------
+   Se aplica a: .logo
+   (la cajita del emoji 🌭)
+
+   Objetivo:
+   - Dar vida al logo con una oscilación (wobble) + crecimiento.
+
+   La animación alterna entre:
+   - rotar hacia la izquierda y tamaño normal
+   - rotar hacia la derecha y un pelín más grande
+*/
+@keyframes logoTravieso{
+
+  /* FROM = 0%:
+     -5deg: rota un poquito a la izquierda
+     scale(1): tamaño normal */
+  from { transform: rotate(-5deg) scale(1); }
+
+  /* TO = 100%:
+     +5deg: rota a la derecha
+     scale(1.05): crece un 5% (parece “más vivo”) */
+  to   { transform: rotate(5deg) scale(1.05);}
+
+}
+
+
+/* ---------------------------------------------------------
+   2) peligroso
+   ---------------------------------------------------------
+   Se aplica a: .badge
+   (la píldora “Envío 24/48h...”)
+
+   Objetivo:
+   - Simular un “resplandor” que aparece y desaparece
+   - Atrae atención sin ser agresivo
+
+   Se anima box-shadow (halo alrededor del badge).
+*/
+@keyframes peligroso{
+
+  /* 0%: sin brillo
+     box-shadow: 0 0 0 ... (radio 0 => no halo)
+     rgba(...,0) => completamente transparente */
+  0% { box-shadow: 0  0  0 rgba(255, 200, 120, 0);  }
+
+  /* 50%: brillo máximo
+     0 0 22px => halo difuso de 22px alrededor
+     alpha .20 => suave, no “neón” */
+  50% { box-shadow: 0  0  22px rgba(255, 200, 120, .20);   }
+
+  /* 100%: vuelve a apagarse
+     regresa al estado inicial, sin halo */
+  100% { box-shadow: 0  0  0 rgba(255, 200, 120, 0);    }
+
+}
+
+
+/* ---------------------------------------------------------
+   3) puntoTravieso
+   ---------------------------------------------------------
+   Se aplica a: .badge-dot
+   (el puntito amarillo dentro del badge)
+
+   Objetivo:
+   - “latido” típico de indicador activo (online / vivo)
+   - Se combina escala + opacity para sensación orgánica
+*/
+@keyframes puntoTravieso {
+
+  /* 0%: tamaño normal, ligeramente transparente */
+  0% { transform: scale(1); opacity: .8;  }
+
+  /* 50%: crece (25%) y se hace más visible */
+  50% { transform: scale(1.25); opacity: 1;   }
+
+  /* 100%: vuelve al tamaño normal y baja opacidad */
+  100% { transform: scale(1); opacity: .8;   }
+}
+
+
+/* ---------------------------------------------------------
+   4) tarjetaTraviesa
+   ---------------------------------------------------------
+   Se aplica a: .hero-card
+   (la tarjeta de producto del hero)
+
+   Objetivo:
+   - Animación de entrada (entra desde abajo + fade-in)
+   - Muy típica cuando “carga” un componente
+
+   Propiedades animadas:
+   - transform (translateY)
+   - opacity
+*/
+@keyframes tarjetaTraviesa {
+
+  /* 0%:
+     translateY(14px) => empieza 14px más abajo
+     opacity: 0 => invisible */
+  0% {transform: translateY(14px); opacity: 0;}
+
+  /* 100%:
+     translateY(0) => llega a su posición real
+     opacity: 1 => completamente visible */
+  100% {transform: translateY(0); opacity: 1;}
+
+}
+
+
+/* ---------------------------------------------------------
+   5) marqueeMove
+   ---------------------------------------------------------
+   Se aplica a: .marquee-track
+   (el contenedor que arrastra los mensajes)
+
+   Objetivo:
+   - Desplazar horizontalmente el track de promociones
+   - Efecto “cinta” o ticker continuo
+
+   Traducción visual:
+   - el contenido se mueve hacia la izquierda
+*/
+@keyframes marqueeMove{
+
+  /* Empieza sin desplazamiento */
+  from { transform: translateX(0); }
+
+  /* Termina desplazando el track a la izquierda (-50%)
+     ¿Por qué -50%?
+     - Normalmente se duplica el contenido para que el bucle sea suave.
+     - Desplazar -50% significa “mover una mitad” del track duplicado,
+       y cuando reinicia, no se nota el salto. */
+  to { transform: translateX(-50%);  }
+
+}
+
+
 /* =========================
    RESPONSIVE
-========================= */
+   =========================
+   Ajustes para pantallas pequeñas:
+   - Hero pasa a 1 columna
+   - Productos a 1 columna
+*/
 @media (max-width: 900px){
   .hero{ grid-template-columns: 1fr; }
   .grid{ grid-template-columns: 1fr; }
